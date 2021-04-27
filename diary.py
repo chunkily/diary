@@ -19,9 +19,8 @@ DIARY_TEMPLATE = """# Mon {mon}
 
 
 def main(requested_date_str):
-    # Expand any ~ in the diary dirpath into user's home path
     cfg = load_config()
-    diary_dirpath = cfg["DIARY_DIRPATH"]
+    diary_dirpath = Path(cfg["DIARY_DIRPATH"]).expanduser()
     diary_editor = cfg["DIARY_EDITOR"]
 
     if requested_date_str == "":
@@ -53,6 +52,7 @@ def main(requested_date_str):
         with diary_filepath.open("w") as f:
             f.write(diary_contents)
 
+    # Open the diary entry with the configured editor
     subprocess.run([diary_editor, diary_filepath])
 
 
@@ -80,7 +80,7 @@ def load_config():
         raise ValueError("DIARY_EDITOR is unset!")
 
     return {
-        "DIARY_DIRPATH": Path(DIARY_DIRPATH).expanduser(),
+        "DIARY_DIRPATH": DIARY_DIRPATH,
         "DIARY_EDITOR": DIARY_EDITOR,
     }
 
