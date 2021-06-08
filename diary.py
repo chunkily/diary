@@ -53,7 +53,7 @@ def main(requested_date_str):
             f.write(diary_contents)
 
     # Open the diary entry with the configured editor
-    subprocess.run([diary_editor, diary_filepath])
+    subprocess.run([*diary_editor, diary_filepath])
 
 
 def parse_date(date_str):
@@ -71,7 +71,7 @@ def parse_date(date_str):
 def load_config():
     DIARY_DIRPATH = os.getenv("DIARY_DIRPATH")
 
-    DIARY_EDITOR = os.getenv("DIARY_EDITOR")
+    DIARY_EDITOR = os.getenv("DIARY_EDITOR").split(" ")
 
     if DIARY_DIRPATH is None:
         raise ValueError("DIARY_DIRPATH is unset!")
