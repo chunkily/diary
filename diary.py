@@ -6,15 +6,17 @@ import subprocess
 import sys
 import dateparser
 
-DIARY_TEMPLATE = """# Mon {mon}
+DIARY_TEMPLATE = """# {mon} - {sun}
 
-# Tue {tue}
+## Mon {mon}
 
-# Wed {wed}
+## Tue {tue}
 
-# Thu {thu}
+## Wed {wed}
 
-# Fri {fri}
+## Thu {thu}
+
+## Fri {fri}
 """
 
 
@@ -41,6 +43,8 @@ def main(requested_date_str):
         thu = monday_date + timedelta(days=3)
         fri = monday_date + timedelta(days=4)
 
+        sun = monday_date + timedelta(days=6)
+
         # strftime doesn't have a format for non zero padded days.
         diary_contents = DIARY_TEMPLATE.format(
             mon="{} {}".format(mon.day, mon.strftime("%b")),
@@ -48,6 +52,7 @@ def main(requested_date_str):
             wed="{} {}".format(wed.day, wed.strftime("%b")),
             thu="{} {}".format(thu.day, thu.strftime("%b")),
             fri="{} {}".format(fri.day, fri.strftime("%b")),
+            sun="{} {}".format(sun.day, sun.strftime("%b")),
         )
         with diary_filepath.open("w") as f:
             f.write(diary_contents)
