@@ -9,13 +9,13 @@ from pathlib import Path
 
 import dateparser
 from dotenv import load_dotenv
+from jinja2 import Environment, PackageLoader, select_autoescape
 
 
 def main(requested_date_str):
     cfg = load_config()
     diary_dirpath = cfg["DIARY_DIRPATH"]
     diary_editor = cfg["DIARY_EDITOR"]
-    diary_template = cfg["DIARY_TEMPLATE"]
 
     if requested_date_str == "":
         requested_date = dt.today()
@@ -38,16 +38,15 @@ def main(requested_date_str):
         sun = monday_date + timedelta(days=6)
 
         # strftime doesn't have a format for non zero padded days.
-        diary_contents = diary_template.format(
-            mon="{} {}".format(mon.day, mon.strftime("%b")),
-            tue="{} {}".format(tue.day, tue.strftime("%b")),
-            wed="{} {}".format(wed.day, wed.strftime("%b")),
-            thu="{} {}".format(thu.day, thu.strftime("%b")),
-            fri="{} {}".format(fri.day, fri.strftime("%b")),
-            sun="{} {}".format(sun.day, sun.strftime("%b")),
-        )
-        with diary_filepath.open("w") as f:
-            f.write(diary_contents)
+        diary_vars = {
+            "mon": "{} {}".format(mon.day, mon.strftime("%b")),
+            "tue": "{} {}".format(tue.day, tue.strftime("%b")),
+            "wed": "{} {}".format(wed.day, wed.strftime("%b")),
+            "thu": "{} {}".format(thu.day, thu.strftime("%b")),
+            "fri": "{} {}".format(fri.day, fri.strftime("%b")),
+            "sun": "{} {}".format(sun.day, sun.strftime("%b")),
+        }
+        write_template(diary_filepath, diary_vars)
 
     # Open the diary entry with the configured editor
     subprocess.run([*diary_editor, diary_filepath])
@@ -65,6 +64,20 @@ def parse_date(date_str):
     return date
 
 
+def write_template(diary_filepath, diary_vars):
+    env = Environment(
+        loader=PackageLoader("diary", "templates"),
+        autoescape=select_autoescape(["html", "xml"]),
+    )
+
+    template = env.get_template("diary.txt.j2")
+
+    content = template.render(diary_vars)
+
+    with open(diary_filepath, "w") as f:
+        f.write(content)
+
+
 def load_config():
     diary_dirpath = os.getenv("DIARY_DIRPATH")
     diary_template_filepath = os.getenv("DIARY_TEMPLATE_FILEPATH")
@@ -80,16 +93,8 @@ def load_config():
         # This should have the same behaviour as double clicking a file
         diary_editor = ["open"]
 
-    if diary_template_filepath is not None and Path(diary_template_filepath).exists():
-        diary_template = Path(diary_template_filepath).expanduser().read_text()
-    else:
-        diary_template = (
-            Path(__file__).parent / "templates" / "diary_template.txt"
-        ).read_text()
-
     return {
         "DIARY_DIRPATH": diary_dirpath,
-        "DIARY_TEMPLATE": diary_template,
         "DIARY_EDITOR": diary_editor,
     }
 
