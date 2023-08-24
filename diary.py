@@ -1,29 +1,21 @@
 """Script to open/create diary entries."""
-from datetime import datetime as dt, timedelta
-from pathlib import Path
 import os
+import platform
 import subprocess
 import sys
+from datetime import datetime as dt
+from datetime import timedelta
+from pathlib import Path
+
 import dateparser
-
-DIARY_TEMPLATE = """# {mon} - {sun}
-
-## Mon {mon}
-
-## Tue {tue}
-
-## Wed {wed}
-
-## Thu {thu}
-
-## Fri {fri}
-"""
+from dotenv import load_dotenv
 
 
 def main(requested_date_str):
     cfg = load_config()
-    diary_dirpath = Path(cfg["DIARY_DIRPATH"]).expanduser()
+    diary_dirpath = cfg["DIARY_DIRPATH"]
     diary_editor = cfg["DIARY_EDITOR"]
+    diary_template = cfg["DIARY_TEMPLATE"]
 
     if requested_date_str == "":
         requested_date = dt.today()
@@ -46,7 +38,7 @@ def main(requested_date_str):
         sun = monday_date + timedelta(days=6)
 
         # strftime doesn't have a format for non zero padded days.
-        diary_contents = DIARY_TEMPLATE.format(
+        diary_contents = diary_template.format(
             mon="{} {}".format(mon.day, mon.strftime("%b")),
             tue="{} {}".format(tue.day, tue.strftime("%b")),
             wed="{} {}".format(wed.day, wed.strftime("%b")),
@@ -74,23 +66,36 @@ def parse_date(date_str):
 
 
 def load_config():
-    DIARY_DIRPATH = os.getenv("DIARY_DIRPATH")
+    diary_dirpath = os.getenv("DIARY_DIRPATH")
+    diary_template_filepath = os.getenv("DIARY_TEMPLATE_FILEPATH")
+    diary_editor = os.getenv("DIARY_EDITOR").split(" ")
 
-    DIARY_EDITOR = os.getenv("DIARY_EDITOR").split(" ")
+    if diary_dirpath is None:
+        diary_dirpath = Path(__file__).parent / "diary_entries"
 
-    if DIARY_DIRPATH is None:
-        raise ValueError("DIARY_DIRPATH is unset!")
+    diary_dirpath = Path(diary_dirpath).expanduser()
 
-    if DIARY_EDITOR is None:
-        raise ValueError("DIARY_EDITOR is unset!")
+    if diary_editor is None:
+        # Try to use the default editor for the current platform
+        # This should have the same behaviour as double clicking a file
+        diary_editor = ["open"]
+
+    if diary_template_filepath is not None and Path(diary_template_filepath).exists():
+        diary_template = Path(diary_template_filepath).expanduser().read_text()
+    else:
+        diary_template = (
+            Path(__file__).parent / "templates" / "diary_template.txt"
+        ).read_text()
 
     return {
-        "DIARY_DIRPATH": DIARY_DIRPATH,
-        "DIARY_EDITOR": DIARY_EDITOR,
+        "DIARY_DIRPATH": diary_dirpath,
+        "DIARY_TEMPLATE": diary_template,
+        "DIARY_EDITOR": diary_editor,
     }
 
 
 if __name__ == "__main__":
+    load_dotenv()
     args = sys.argv[1:]
     # Join all arguments into a single string.
     # example ["last", "week"] becomes "last week"
