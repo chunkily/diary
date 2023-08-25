@@ -44,10 +44,16 @@ The following instructions will allow you to run the script from anywhere on you
 
 #### Bash
 
-Place an alias in your .bashrc file:
+Place an alias in your `.bashrc` file:
 
 ```bash
 alias diary="<path to virtualenv python> <path to diary.py>"
+```
+
+Run the following in this directory to add the alias to your `.bashrc` file:
+
+```bash
+echo "alias diary=\"$(pwd)/venv/bin/python3 $(pwd)/diary.py\"" >> ~/.bashrc
 ```
 
 #### Windows CMD
@@ -67,11 +73,11 @@ Place an alias in your PowerShell profile ($Home\Documents\PowerShell\Microsoft.
 Set-Alias -Name diary -Value <path to virtualenv python> <path to diary.py>
 ```
 
-### Environment Variables
+## Configure
 
-The script uses 2 environment variables:
+The script uses 2 environment variables for configuration:
 
-- `DIARY_DIR` - The directory where the diary entries are stored. Defaults to the `diary_entries` folder here if unset.
+- `DIARY_DIRPATH` - The directory where the diary entries are stored. Defaults to the `diary_entries` folder here if unset.
 - `DIARY_EDITOR` - The editor to use to open the diary entries. Defaults to the system default editor if unset.
 
 You can optionally create a `.env` file in the root of the project to set these variables. The values in this file will not override if the environment variable has already been set.
@@ -82,7 +88,7 @@ Use the `.env.sample` file as a template.
 cp .env.sample .env
 ```
 
-#### DIARY_EDITOR Examples
+### DIARY_EDITOR Examples
 
 The following examples show how to set the `DIARY_EDITOR` environment variable to use different editors. The path to the diary entry is passed as the last argument to the editor.
 
