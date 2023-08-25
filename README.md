@@ -62,7 +62,7 @@ Create a `diary.bat` file somewhere in your path with the following contents:
 
 ```cmd
 @echo off
-python <path to virtualenv python> <path to diary.py> %*
+<path to virtualenv python> <path to diary.py> %*
 ```
 
 #### PowerShell
