@@ -9,7 +9,7 @@ from pathlib import Path
 
 import dateparser
 from dotenv import load_dotenv
-from jinja2 import Environment, PackageLoader, select_autoescape
+from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 
 def main(requested_date_str):
@@ -65,8 +65,11 @@ def parse_date(date_str):
 
 
 def write_template(diary_filepath, diary_vars):
+    default_template_dirpath = Path(__file__).parent / "templates"
+    diary_template_dirpath = Path(diary_filepath).parent / "templates"
+
     env = Environment(
-        loader=PackageLoader("diary", "templates"),
+        loader=FileSystemLoader([diary_template_dirpath, default_template_dirpath]),
         autoescape=select_autoescape(["html", "xml"]),
     )
 
@@ -80,7 +83,6 @@ def write_template(diary_filepath, diary_vars):
 
 def load_config():
     diary_dirpath = os.getenv("DIARY_DIRPATH")
-    diary_template_filepath = os.getenv("DIARY_TEMPLATE_FILEPATH")
     diary_editor = os.getenv("DIARY_EDITOR").split(" ")
 
     if diary_dirpath is None:
