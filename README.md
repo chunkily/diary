@@ -167,8 +167,8 @@ templates/day.md.j2
 
 The template is passed the following variables:
 
-- `mon`, `tue`, `wed`, `thu`, `fri`, `sat`, `sun` - The dates of the diary entry as datetime objects
-- `week` - A tuple of the start and end dates (Monday and Sunday) of the diary entry as datetime objects
-- `weekdays` - An array of the weekdays (Monday to Friday) of the diary entry as datetime objects
-- `weekend` - An array of the weekend days (Saturday and Sunday) of the diary entry as datetime objects
-- `days` - An array of the days (Monday to Sunday) of the diary entry as datetime objects
+- `mon`, `tue`, `wed`, `thu`, `fri`, `sat`, `sun` - The dates of the diary entry as datetime.date objects
+- `week` - A tuple of the start and end dates (Monday and Sunday) of the diary entry as datetime.date objects
+- `weekdays` - An array of the weekdays (Monday to Friday) of the diary entry as datetime.date objects
+- `weekend` - An array of the weekend days (Saturday and Sunday) of the diary entry as datetime.date objects
+- `days` - An array of the days (Monday to Sunday) of the diary entry as datetime.date objects

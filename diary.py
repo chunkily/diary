@@ -3,8 +3,7 @@ import os
 import re
 import subprocess
 import sys
-from datetime import datetime as dt
-from datetime import timedelta
+from datetime import date, timedelta
 from pathlib import Path
 
 import dateparser
@@ -18,7 +17,7 @@ def main(requested_date_str):
     diary_editor = cfg["DIARY_EDITOR"]
 
     if requested_date_str == "":
-        requested_date = dt.today()
+        requested_date = date.today()
     else:
         requested_date = parse_date(requested_date_str)
 
@@ -71,7 +70,7 @@ def main(requested_date_str):
     subprocess.run([*diary_editor, diary_filepath])
 
 
-def parse_date(date_str):
+def parse_date(date_str) -> date:
     # Use dateparser to parse the requested date string
     date = dateparser.parse(
         date_str,
@@ -80,7 +79,7 @@ def parse_date(date_str):
             "PREFER_DAY_OF_MONTH": "first",
         },
     )
-    return date
+    return date.date()
 
 
 def write_template(diary_filepath, diary_vars):
