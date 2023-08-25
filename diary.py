@@ -34,18 +34,50 @@ def main(requested_date_str):
         wed = monday_date + timedelta(days=2)
         thu = monday_date + timedelta(days=3)
         fri = monday_date + timedelta(days=4)
-
+        sat = monday_date + timedelta(days=5)
         sun = monday_date + timedelta(days=6)
+
+        mon_formatted = f"Mon {mon.day} {mon.strftime('%b')}"
+        tue_formatted = f"Tue {tue.day} {tue.strftime('%b')}"
+        wed_formatted = f"Wed {wed.day} {wed.strftime('%b')}"
+        thu_formatted = f"Thu {thu.day} {thu.strftime('%b')}"
+        fri_formatted = f"Fri {fri.day} {fri.strftime('%b')}"
+        sat_formatted = f"Sat {sat.day} {sat.strftime('%b')}"
+        sun_formatted = f"Sun {sun.day} {sun.strftime('%b')}"
+
+        week_formatted = (
+            f"{mon.day} {mon.strftime('%b')} - {sun.day} {sun.strftime('%b')}"
+        )
 
         # strftime doesn't have a format for non zero padded days.
         diary_vars = {
-            "mon": "{} {}".format(mon.day, mon.strftime("%b")),
-            "tue": "{} {}".format(tue.day, tue.strftime("%b")),
-            "wed": "{} {}".format(wed.day, wed.strftime("%b")),
-            "thu": "{} {}".format(thu.day, thu.strftime("%b")),
-            "fri": "{} {}".format(fri.day, fri.strftime("%b")),
-            "sun": "{} {}".format(sun.day, sun.strftime("%b")),
+            "mon": mon_formatted,
+            "tue": tue_formatted,
+            "wed": wed_formatted,
+            "thu": thu_formatted,
+            "fri": fri_formatted,
+            "sat": sat_formatted,
+            "sun": sun_formatted,
+            "weekdays": [
+                mon_formatted,
+                tue_formatted,
+                wed_formatted,
+                thu_formatted,
+                fri_formatted,
+            ],
+            "weekend": [sat_formatted, sun_formatted],
+            "days": [
+                mon_formatted,
+                tue_formatted,
+                wed_formatted,
+                thu_formatted,
+                fri_formatted,
+                sat_formatted,
+                sun_formatted,
+            ],
+            "week": week_formatted,
         }
+
         write_template(diary_filepath, diary_vars)
 
     # Open the diary entry with the configured editor

@@ -1,22 +1,4 @@
-# {{mon}} - {{sun}}
-
-## Mon {{mon}}
-
-{% include 'standups.txt.j2' %}
-
-## Tue {{tue}}
-
-{% include 'standups.txt.j2' %}
-
-## Wed {{wed}}
-
-{% include 'standups.txt.j2' %}
-
-## Thu {{thu}}
-
-{% include 'standups.txt.j2' %}
-
-## Fri {{fri}}
-
-{% include 'standups.txt.j2' %}
-
+# {{week}}
+{% for day in weekdays %}
+## {{day}}
+{% endfor %}
