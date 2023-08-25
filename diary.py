@@ -37,45 +37,32 @@ def main(requested_date_str):
         sat = monday_date + timedelta(days=5)
         sun = monday_date + timedelta(days=6)
 
-        # strftime doesn't have a format for non zero padded days.
-        mon_formatted = f"Mon {mon.day} {mon.strftime('%b')}"
-        tue_formatted = f"Tue {tue.day} {tue.strftime('%b')}"
-        wed_formatted = f"Wed {wed.day} {wed.strftime('%b')}"
-        thu_formatted = f"Thu {thu.day} {thu.strftime('%b')}"
-        fri_formatted = f"Fri {fri.day} {fri.strftime('%b')}"
-        sat_formatted = f"Sat {sat.day} {sat.strftime('%b')}"
-        sun_formatted = f"Sun {sun.day} {sun.strftime('%b')}"
-
-        week_formatted = (
-            f"{mon.day} {mon.strftime('%b')} - {sun.day} {sun.strftime('%b')}"
-        )
-
         diary_vars = {
-            "mon": mon_formatted,
-            "tue": tue_formatted,
-            "wed": wed_formatted,
-            "thu": thu_formatted,
-            "fri": fri_formatted,
-            "sat": sat_formatted,
-            "sun": sun_formatted,
+            "mon": mon,
+            "tue": tue,
+            "wed": wed,
+            "thu": thu,
+            "fri": fri,
+            "sat": sat,
+            "sun": sun,
             "weekdays": [
-                mon_formatted,
-                tue_formatted,
-                wed_formatted,
-                thu_formatted,
-                fri_formatted,
+                mon,
+                tue,
+                wed,
+                thu,
+                fri,
             ],
-            "weekend": [sat_formatted, sun_formatted],
+            "weekend": [sat, sun],
             "days": [
-                mon_formatted,
-                tue_formatted,
-                wed_formatted,
-                thu_formatted,
-                fri_formatted,
-                sat_formatted,
-                sun_formatted,
+                mon,
+                tue,
+                wed,
+                thu,
+                fri,
+                sat,
+                sun,
             ],
-            "week": week_formatted,
+            "week": (mon, sun),
         }
 
         write_template(diary_filepath, diary_vars)
@@ -120,7 +107,7 @@ def load_config():
     if diary_dirpath_str == "":
         diary_dirpath = Path(__file__).parent / "diary_entries"
 
-    diary_dirpath = Path(diary_dirpath_str).expanduser()
+    diary_dirpath = Path(diary_dirpath).expanduser()
 
     if not diary_dirpath.exists():
         raise Exception(f"Diary directory {diary_dirpath} does not exist.")

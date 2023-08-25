@@ -1,4 +1,17 @@
-# {{week}}
+{%- macro format_date(date) -%}
+{{ date.day }} {{ date.strftime('%b') }}
+{%- endmacro -%}
+{%- macro format_day_of_week(date) -%}
+{%- if date.weekday() == 0 -%}Mon
+{%- elif date.weekday() == 1 -%}Tue
+{%- elif date.weekday() == 2 -%}Wed
+{%- elif date.weekday() == 3 -%}Thu
+{%- elif date.weekday() == 4 -%}Fri
+{%- elif date.weekday() == 5 -%}Sat
+{%- elif date.weekday() == 6 -%}Sun
+{%- endif -%}
+{%- endmacro -%}
+# {{ format_date(mon) }} - {{ format_date(sun) }}
 {% for day in weekdays %}
-## {{day}}
+## {{ format_day_of_week(day) }} {{ format_date(day) }}
 {% endfor %}

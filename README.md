@@ -148,7 +148,7 @@ You can use `{% include "filename" %}` to include other files in that template. 
 
 ```jinja2
 templates/diary.md.j2
-# {{week}}
+# {{mon}} - {{sun}}
 {% for day in days %}
 {% include "day.md.j2" %}
 {% endfor %}
@@ -167,8 +167,8 @@ templates/day.md.j2
 
 The template is passed the following variables:
 
-- `mon`, `tue`, `wed`, `thu`, `fri`, `sat`, `sun` - The formatted dates of the diary entry
-- `week` - The week interval, displayed as `{{mon}} - {{sun}}`
-- `weekdays` - An array of the formatted weekdays (Monday to Friday) of the diary entry
-- `weekend` - An array of the formatted weekend days (Saturday and Sunday) of the diary entry
-- `days` - An array of the formatted days (Monday to Sunday) of the diary entry
+- `mon`, `tue`, `wed`, `thu`, `fri`, `sat`, `sun` - The dates of the diary entry as datetime objects
+- `week` - A tuple of the start and end dates (Monday and Sunday) of the diary entry as datetime objects
+- `weekdays` - An array of the weekdays (Monday to Friday) of the diary entry as datetime objects
+- `weekend` - An array of the weekend days (Saturday and Sunday) of the diary entry as datetime objects
+- `days` - An array of the days (Monday to Sunday) of the diary entry as datetime objects
