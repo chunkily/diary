@@ -11,7 +11,7 @@
 {%- elif date.weekday() == 6 -%}Sun
 {%- endif -%}
 {%- endmacro -%}
-# {{ format_date(mon) }} - {{ format_date(sun) }}
+# {{ format_date(mon) }} - {{ format_date(sun) }} {{ sun.year }}
 {% for day in weekdays %}
 ## {{ format_day_of_week(day) }} {{ format_date(day) }}
 {% endfor %}
