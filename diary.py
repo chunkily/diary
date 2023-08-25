@@ -1,6 +1,6 @@
 """Script to open/create diary entries."""
 import os
-import platform
+import re
 import subprocess
 import sys
 from datetime import datetime as dt
@@ -37,6 +37,7 @@ def main(requested_date_str):
         sat = monday_date + timedelta(days=5)
         sun = monday_date + timedelta(days=6)
 
+        # strftime doesn't have a format for non zero padded days.
         mon_formatted = f"Mon {mon.day} {mon.strftime('%b')}"
         tue_formatted = f"Tue {tue.day} {tue.strftime('%b')}"
         wed_formatted = f"Wed {wed.day} {wed.strftime('%b')}"
@@ -49,7 +50,6 @@ def main(requested_date_str):
             f"{mon.day} {mon.strftime('%b')} - {sun.day} {sun.strftime('%b')}"
         )
 
-        # strftime doesn't have a format for non zero padded days.
         diary_vars = {
             "mon": mon_formatted,
             "tue": tue_formatted,
@@ -105,7 +105,7 @@ def write_template(diary_filepath, diary_vars):
         autoescape=select_autoescape(["html", "xml"]),
     )
 
-    template = env.get_template("diary.txt.j2")
+    template = env.get_template("diary.md.j2")
 
     content = template.render(diary_vars)
 
@@ -114,18 +114,26 @@ def write_template(diary_filepath, diary_vars):
 
 
 def load_config():
-    diary_dirpath = os.getenv("DIARY_DIRPATH")
-    diary_editor = os.getenv("DIARY_EDITOR").split(" ")
+    diary_dirpath_str = os.getenv("DIARY_DIRPATH", default="")
+    diary_editor_str = os.getenv("DIARY_EDITOR", default="")
 
-    if diary_dirpath is None:
+    if diary_dirpath_str == "":
         diary_dirpath = Path(__file__).parent / "diary_entries"
 
-    diary_dirpath = Path(diary_dirpath).expanduser()
+    diary_dirpath = Path(diary_dirpath_str).expanduser()
 
-    if diary_editor is None:
+    if not diary_dirpath.exists():
+        raise Exception(f"Diary directory {diary_dirpath} does not exist.")
+
+    if diary_editor_str == "":
         # Try to use the default editor for the current platform
         # This should have the same behaviour as double clicking a file
         diary_editor = ["open"]
+    else:
+        # Split the editor string on spaces, but exclude spaces that are preceded by a backslash
+        diary_editor = re.split(r"(?<!\\) ", diary_editor_str)
+        # Remove the backslash from any escaped spaces
+        diary_editor = [s.replace("\\ ", " ") for s in diary_editor]
 
     return {
         "DIARY_DIRPATH": diary_dirpath,
