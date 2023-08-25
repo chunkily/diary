@@ -105,8 +105,8 @@ def load_config():
 
     if diary_dirpath_str == "":
         diary_dirpath = Path(__file__).parent / "diary_entries"
-
-    diary_dirpath = Path(diary_dirpath).expanduser()
+    else:
+        diary_dirpath = Path(diary_dirpath_str).expanduser()
 
     if not diary_dirpath.exists():
         raise Exception(f"Diary directory {diary_dirpath} does not exist.")
