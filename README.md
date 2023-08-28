@@ -44,12 +44,6 @@ The following instructions will allow you to run the script from anywhere on you
 
 #### Bash
 
-Place an alias in your `.bashrc` file:
-
-```bash
-alias diary="<path to virtualenv python> <path to diary.py>"
-```
-
 Run the following in this directory to add the alias to your `.bashrc` file:
 
 ```bash
@@ -67,10 +61,14 @@ Create a `diary.bat` file somewhere in your path with the following contents:
 
 #### PowerShell
 
-Place an alias in your PowerShell profile ($Home\Documents\PowerShell\Microsoft.PowerShell_profile.ps1):
+Open an editor to the PowerShell profile file using `notepad $PROFILE` and add the following function to the file, changing the paths to the virtualenv and diary.py as appropriate:
 
 ```powershell
-Set-Alias -Name diary -Value <path to virtualenv python> <path to diary.py>
+function diary {
+path\to\venv\Scripts\Activate.ps1
+path\to\project\diary.py @args
+deactivate
+}
 ```
 
 ## Configure
