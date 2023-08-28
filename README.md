@@ -8,21 +8,17 @@ You will need Python 3.6 or higher to run this program.
 
 ## Installation
 
-### Virtual Environment
+The script should work across both Windows and Linux systems but the installation steps differ a little.
 
-Setup the virtual environment using Make or manually.
+### Linux
 
-#### Make
-
-Set up the Python virtual env using `make install`
+Setup the virtual environment using Make
 
 ```bash
 make install
 ```
 
-#### Manual
-
-Using Bash:
+Or manually with the following commands
 
 ```bash
 python3 -m venv venv
@@ -30,7 +26,15 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-Using Windows Command Prompt:
+Lastly run the following command in this directory to add the alias to your `.bashrc` file to make the script available anywhere on your system
+
+```bash
+echo "alias diary=\"$(pwd)/venv/bin/python3 $(pwd)/diary.py\"" >> ~/.bashrc
+```
+
+### Windows
+
+Create the virtual environment and install the dependencies
 
 ```cmd
 python -m venv venv
@@ -38,17 +42,7 @@ python -m venv venv
 pip install -r requirements.txt
 ```
 
-### Linking
-
 The following instructions will allow you to run the script from anywhere on your system.
-
-#### Bash
-
-Run the following in this directory to add the alias to your `.bashrc` file:
-
-```bash
-echo "alias diary=\"$(pwd)/venv/bin/python3 $(pwd)/diary.py\"" >> ~/.bashrc
-```
 
 #### Windows CMD
 
