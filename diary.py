@@ -1,5 +1,7 @@
 """Script to open/create diary entries."""
+
 import os
+import platform
 import re
 import subprocess
 import sys
@@ -67,7 +69,11 @@ def main(requested_date_str):
         write_template(diary_filepath, diary_vars)
 
     # Open the diary entry with the configured editor
-    subprocess.run([*diary_editor, diary_filepath])
+    try:
+        open_entry(diary_filepath, diary_editor)
+    except Exception as e:
+        print(f"Failed to open {diary_filepath} with {diary_editor}.")
+        sys.exit(1)
 
 
 def parse_date(date_str) -> date:
@@ -111,20 +117,27 @@ def load_config():
     if not diary_dirpath.exists():
         raise Exception(f"Diary directory {diary_dirpath} does not exist.")
 
+    return {
+        "DIARY_DIRPATH": diary_dirpath,
+        "DIARY_EDITOR": diary_editor_str,
+    }
+
+
+def open_entry(diary_filepath, diary_editor_str):
     if diary_editor_str == "":
-        # Try to use the default editor for the current platform
-        # This should have the same behaviour as double clicking a file
-        diary_editor = ["open"]
+        # Open the diary entry with the default editor for the platform
+        if platform.system() == "Windows":
+            os.startfile(diary_filepath)
+        elif platform.system() == "Darwin":
+            subprocess.run(["open", diary_filepath])
+        else:
+            subprocess.run(["xdg-open", diary_filepath])
     else:
         # Split the editor string on spaces, but exclude spaces that are preceded by a backslash
         diary_editor = re.split(r"(?<!\\) ", diary_editor_str)
         # Remove the backslash from any escaped spaces
         diary_editor = [s.replace("\\ ", " ") for s in diary_editor]
-
-    return {
-        "DIARY_DIRPATH": diary_dirpath,
-        "DIARY_EDITOR": diary_editor,
-    }
+        subprocess.run([*diary_editor, diary_filepath])
 
 
 if __name__ == "__main__":
