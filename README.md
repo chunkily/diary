@@ -8,6 +8,15 @@ You will need Python 3.6 or higher to run this program.
 
 ## Installation
 
+First clone the repository to your system. The rest of the installation steps
+assume that you have cloned the repository to your home directory.
+
+```bash
+cd ~
+git clone https://github.com/chunkily/diary.git
+cd diary
+```
+
 The script should work across both Windows and Linux systems but the
 installation steps differ a little.
 
@@ -27,8 +36,8 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-Lastly run the following command in this directory to add the alias to your
-`.bashrc` file to make the script available anywhere on your system
+Lastly run the following command to add the alias to your `.bashrc` file to make
+the script available anywhere on your system
 
 ```bash
 echo "alias diary=\"$(pwd)/venv/bin/python3 $(pwd)/diary.py\"" >> ~/.bashrc
@@ -53,9 +62,7 @@ Create a `diary.bat` file somewhere in your path with the following contents:
 
 ```cmd
 @echo off
-%USERPROFILE%\diary\venv\Scripts\Activate.bat
-python %USERPROFILE%\diary\diary.py %*
-deactivate
+%USERPROFILE%\diary\venv\Scripts\python.exe %USERPROFILE%\diary\diary.py %*
 ```
 
 Adjust the paths to the virtualenv and diary.py as necessary if you did not
