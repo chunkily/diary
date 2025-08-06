@@ -125,13 +125,8 @@ def load_config():
 
 def open_entry(diary_filepath, diary_editor_str):
     if diary_editor_str == "":
-        # Open the diary entry with the default editor for the platform
-        if platform.system() == "Windows":
-            os.startfile(diary_filepath)
-        elif platform.system() == "Darwin":
-            subprocess.run(["open", diary_filepath])
-        else:
-            subprocess.run(["xdg-open", diary_filepath])
+        # Print the path to the diary entry to the console
+        print(diary_filepath)
     else:
         # Split the editor string on spaces, but exclude spaces that are preceded by a backslash
         diary_editor = re.split(r"(?<!\\) ", diary_editor_str)
