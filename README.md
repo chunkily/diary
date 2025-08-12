@@ -4,7 +4,8 @@ Simple utility to create and open weekly diary entries.
 
 ## Requirements
 
-You will need Python 3.6 or higher to run this program.
+You will need to install [uv](https://docs.astral.sh/uv/) on your system to use
+this.
 
 ## Installation
 
@@ -22,68 +23,32 @@ installation steps differ a little.
 
 ### Linux
 
-Setup the virtual environment using Make
+Add the alias to your `.bashrc` file to make the script available anywhere on
+your system
 
 ```bash
-make install
+echo "alias diary=\"uv run --project ~/diary ~/diary/main.py\"" >> ~/.bashrc
 ```
 
-Or manually with the following commands
+### Windows CMD
 
-```bash
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-```
-
-Lastly run the following command to add the alias to your `.bashrc` file to make
-the script available anywhere on your system
-
-```bash
-echo "alias diary=\"$(pwd)/venv/bin/python3 $(pwd)/diary.py\"" >> ~/.bashrc
-```
-
-### Windows
-
-Create the virtual environment and install the dependencies
-
-```cmd
-python -m venv venv
-.\venv\Scripts\activate.bat
-pip install -r requirements.txt
-```
-
-The following instructions will allow you to run the script from anywhere on
-your system.
-
-#### Windows CMD
-
-Create a `diary.bat` file somewhere in your path with the following contents:
+Create a `diary.bat` file somewhere in your PATH with the following contents:
 
 ```cmd
 @echo off
-%USERPROFILE%\diary\venv\Scripts\python.exe %USERPROFILE%\diary\diary.py %*
+uv run --project %USERPROFILE%\diary %USERPROFILE%\diary\main.py %*
 ```
 
-Adjust the paths to the virtualenv and diary.py as necessary if you did not
-clone the repository to your home directory.
-
-#### PowerShell
+### PowerShell
 
 Open an editor to the PowerShell profile file using `notepad $PROFILE` and add
-the following function to the file, changing the paths to the virtualenv and
-diary.py as appropriate:
+the following function to the file
 
 ```powershell
 function diary {
-    & "$HOME\diary\venv\Scripts\Activate.ps1"
-    & python "$HOME\diary\diary.py" @args
-    & deactivate
+    & uv run --project "$HOME\diary" "$HOME\diary\main.py" @args
 }
 ```
-
-Adjust the paths to the virtualenv and diary.py as necessary if you did not
-clone the repository to your home directory.
 
 ## Configure
 
@@ -91,8 +56,8 @@ The script uses 2 environment variables for configuration:
 
 - `DIARY_DIRPATH` - The directory where the diary entries are stored. Defaults
   to the `diary_entries` folder here if unset.
-- `DIARY_EDITOR` - The editor to use to open the diary entries. Defaults to the
-  system default editor if unset.
+- `DIARY_EDITOR` - The editor to use to open the diary entries. Simply prints
+  the path to the diary entry if unset.
 
 You can optionally create a `.env` file in the root of the project to set these
 variables. The values in this file will not override if the environment variable
@@ -110,17 +75,27 @@ The following examples show how to set the `DIARY_EDITOR` environment variable
 to use different editors. The path to the diary entry is passed as the last
 argument to the editor.
 
-Visual Studio Code:
+**Visual Studio Code:**
 
 ```dotenv
 DIARY_EDITOR=code --new-window
 ```
 
-Notepad++:
+**Notepad++:**
+
+Note how the spaces in the path are escaped with a backslash. This is necessary
+to ensure the command is parsed correctly in the shell.
 
 ```dotenv
 # Escape spaces with a backslash
 DIARY_EDITOR=C:\Program\ Files\ (x86)\Notepad++\notepad++.exe -multiInst -notabbar -nosession -noPlugin
+```
+
+You can use an empty string to instead not set an editor and just print the path
+to the diary entry to the console.
+
+```dotenv
+DIARY_EDITOR=""
 ```
 
 ## Usage
@@ -196,7 +171,8 @@ templates/day.md.j2
 The template is passed the following variables:
 
 - `mon`, `tue`, `wed`, `thu`, `fri`, `sat`, `sun` - The dates of the diary entry
-  as datetime.date objects
+  as
+  [datetime.date objects](https://docs.python.org/3/library/datetime.html#date-objects)
 - `week` - A tuple of the start and end dates (Monday and Sunday) of the diary
   entry as datetime.date objects
 - `weekdays` - An array of the weekdays (Monday to Friday) of the diary entry as
