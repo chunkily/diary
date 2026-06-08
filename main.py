@@ -1,7 +1,6 @@
 """Script to open/create diary entries."""
 
 import os
-import platform
 import re
 import subprocess
 import sys
@@ -17,6 +16,7 @@ def main(requested_date_str):
     cfg = load_config()
     diary_dirpath = cfg["DIARY_DIRPATH"]
     diary_editor = cfg["DIARY_EDITOR"]
+    diary_editor_target = cfg["DIARY_EDITOR_TARGET"]
 
     if requested_date_str == "":
         requested_date = date.today()
@@ -70,7 +70,7 @@ def main(requested_date_str):
 
     # Open the diary entry with the configured editor
     try:
-        open_entry(diary_filepath, diary_editor)
+        open_entry(diary_filepath, diary_dirpath, diary_editor, diary_editor_target)
     except Exception as e:
         print(f"Failed to open {diary_filepath} with {diary_editor}.")
         sys.exit(1)
@@ -85,6 +85,8 @@ def parse_date(date_str) -> date:
             "PREFER_DAY_OF_MONTH": "first",
         },
     )
+    if not date:
+        raise ValueError(f"Could not parse date string: {date_str}")
     return date.date()
 
 
@@ -108,6 +110,7 @@ def write_template(diary_filepath, diary_vars):
 def load_config():
     diary_dirpath_str = os.getenv("DIARY_DIRPATH", default="")
     diary_editor_str = os.getenv("DIARY_EDITOR", default="")
+    diary_editor_target_str = os.getenv("DIARY_EDITOR_TARGET", default="file")
 
     if diary_dirpath_str == "":
         diary_dirpath = Path(__file__).parent / "diary_entries"
@@ -117,22 +120,33 @@ def load_config():
     if not diary_dirpath.exists():
         raise Exception(f"Diary directory {diary_dirpath} does not exist.")
 
+    if diary_editor_target_str not in {"file", "folder"}:
+        raise ValueError(
+            "DIARY_EDITOR_TARGET must be 'file' or 'folder', "
+            f"got {diary_editor_target_str!r}."
+        )
+
     return {
         "DIARY_DIRPATH": diary_dirpath,
         "DIARY_EDITOR": diary_editor_str,
+        "DIARY_EDITOR_TARGET": diary_editor_target_str,
     }
 
 
-def open_entry(diary_filepath, diary_editor_str):
+def open_entry(diary_filepath: Path, diary_dirpath: Path, diary_editor_str: str, diary_editor_target: str):
+    diary_targetpath = diary_filepath.resolve()
+    if diary_editor_target == "folder":
+        diary_targetpath = diary_dirpath.resolve()
+
     if diary_editor_str == "":
         # Print the path to the diary entry to the console
-        print(diary_filepath)
+        print(diary_targetpath)
     else:
         # Split the editor string on spaces, but exclude spaces that are preceded by a backslash
         diary_editor = re.split(r"(?<!\\) ", diary_editor_str)
         # Remove the backslash from any escaped spaces
         diary_editor = [s.replace("\\ ", " ") for s in diary_editor]
-        subprocess.run([*diary_editor, diary_filepath])
+        subprocess.run([*diary_editor, diary_targetpath])
 
 
 if __name__ == "__main__":
