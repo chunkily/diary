@@ -52,7 +52,7 @@ function diary {
 
 ## Configure
 
-The script uses 2 environment variables for configuration:
+The script uses 3 environment variables for configuration:
 
 - `DIARY_DIRPATH` - The directory where the diary entries are stored. Defaults
   to the `diary_entries` folder here if unset.
