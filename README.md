@@ -52,12 +52,15 @@ function diary {
 
 ## Configure
 
-The script uses 2 environment variables for configuration:
+The script uses 3 environment variables for configuration:
 
 - `DIARY_DIRPATH` - The directory where the diary entries are stored. Defaults
   to the `diary_entries` folder here if unset.
 - `DIARY_EDITOR` - The editor to use to open the diary entries. Simply prints
   the path to the diary entry if unset.
+- `DIARY_EDITOR_TARGET` - Controls what path is passed to the editor. Use
+  `file` to pass the diary entry path, or `folder` to pass the diary entries
+  directory. Defaults to `file`.
 
 You can optionally create a `.env` file in the root of the project to set these
 variables. The values in this file will not override if the environment variable
@@ -72,7 +75,7 @@ cp .env.sample .env
 ### DIARY_EDITOR Examples
 
 The following examples show how to set the `DIARY_EDITOR` environment variable
-to use different editors. The path to the diary entry is passed as the last
+to use different editors. The path to the diary entry or folder is passed as the last
 argument to the editor.
 
 **Visual Studio Code:**
@@ -90,6 +93,18 @@ to ensure the command is parsed correctly in the shell.
 # Escape spaces with a backslash
 DIARY_EDITOR=C:\Program\ Files\ (x86)\Notepad++\notepad++.exe -multiInst -notabbar -nosession -noPlugin
 ```
+
+**Obsidian:**
+
+You will need to [enable the Command Line Interface option](https://obsidian.md/help/cli#Install+Obsidian+CLI) in Obsidian first.
+
+```dotenv
+# The Obsidian CLI only accepts folders, not filepaths, as arguments
+DIARY_EDITOR_TARGET=folder
+DIARY_EDITOR=obsidian open
+```
+
+**Echo:**
 
 You can use an empty string to instead not set an editor and just print the path
 to the diary entry to the console.
