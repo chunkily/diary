@@ -96,7 +96,7 @@ DIARY_EDITOR=C:\Program\ Files\ (x86)\Notepad++\notepad++.exe -multiInst -notabb
 
 **Obsidian:**
 
-You will need to enable the Command Line Interface option in obsidian for the vault first.
+You will need to [enable the Command Line Interface option](https://obsidian.md/help/cli#Install+Obsidian+CLI) in Obsidian first.
 
 ```dotenv
 # The Obsidian CLI only accepts folders, not filepaths, as arguments

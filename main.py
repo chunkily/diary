@@ -146,7 +146,7 @@ def open_entry(diary_filepath: Path, diary_dirpath: Path, diary_editor_str: str,
         diary_editor = re.split(r"(?<!\\) ", diary_editor_str)
         # Remove the backslash from any escaped spaces
         diary_editor = [s.replace("\\ ", " ") for s in diary_editor]
-        subprocess.run([*diary_editor, diary_targetpath])
+        subprocess.Popen([*diary_editor, diary_targetpath])
 
 
 if __name__ == "__main__":
