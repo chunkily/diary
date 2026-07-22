@@ -78,16 +78,16 @@ def main(requested_date_str):
 
 def parse_date(date_str) -> date:
     # Use dateparser to parse the requested date string
-    date = dateparser.parse(
+    parsed = dateparser.parse(
         date_str,
         settings={
-            "PREFER_DATES_FROM": "past",
+            "PREFER_DATES_FROM": "current_period",
             "PREFER_DAY_OF_MONTH": "first",
         },
     )
-    if not date:
+    if not parsed:
         raise ValueError(f"Could not parse date string: {date_str}")
-    return date.date()
+    return parsed.date()
 
 
 def write_template(diary_filepath, diary_vars):
@@ -118,7 +118,7 @@ def load_config():
         diary_dirpath = Path(diary_dirpath_str).expanduser()
 
     if not diary_dirpath.exists():
-        raise Exception(f"Diary directory {diary_dirpath} does not exist.")
+        raise ValueError(f"Diary directory {diary_dirpath} does not exist.")
 
     if diary_editor_target_str not in {"file", "folder"}:
         raise ValueError(
@@ -133,7 +133,12 @@ def load_config():
     }
 
 
-def open_entry(diary_filepath: Path, diary_dirpath: Path, diary_editor_str: str, diary_editor_target: str):
+def open_entry(
+    diary_filepath: Path,
+    diary_dirpath: Path,
+    diary_editor_str: str,
+    diary_editor_target: str,
+):
     diary_targetpath = diary_filepath.resolve()
     if diary_editor_target == "folder":
         diary_targetpath = diary_dirpath.resolve()
