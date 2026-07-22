@@ -29,7 +29,7 @@ def main(requested_date_str):
     diary_filepath = diary_dirpath / monday_date.strftime("%Y-%m-%d.md")
 
     if not diary_filepath.exists():
-        print("Creating {} with template.".format(diary_filepath.name))
+        print(f"Creating {diary_filepath.name} with template.")
         mon = monday_date
         tue = monday_date + timedelta(days=1)
         wed = monday_date + timedelta(days=2)
@@ -71,8 +71,8 @@ def main(requested_date_str):
     # Open the diary entry with the configured editor
     try:
         open_entry(diary_filepath, diary_dirpath, diary_editor, diary_editor_target)
-    except Exception as e:
-        print(f"Failed to open {diary_filepath} with {diary_editor}.")
+    except OSError as err:
+        print(f"Failed to open {diary_filepath} with {diary_editor}: {err}")
         sys.exit(1)
 
 
@@ -103,7 +103,7 @@ def write_template(diary_filepath, diary_vars):
 
     content = template.render(diary_vars)
 
-    with open(diary_filepath, "w") as f:
+    with open(diary_filepath, "w", encoding="utf-8") as f:
         f.write(content)
 
 
